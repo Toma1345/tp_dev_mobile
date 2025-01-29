@@ -34,12 +34,12 @@ class MyWidget extends StatelessWidget {
 
     int _currentQuestion=0;
     final List _questions = [
-      Question.name("The question number 1 is a very long question and her answer is true.", true, "flag.png"),
-      Question.name("The question number 2 is true again.", true, "img.png"),
-      Question.name("The question number 3 is false.", false, "img.png"),
-      Question.name("The question number 4 is false again.", false, "flag.png"),
-      Question.name("The question number 5 is true.", true, "flag.png"),
-      Question.name("The question number 6 is true again.", true, "img.png"),
+      Question.name("The question number 1 is a very long question and her answer is true.", true, "images/flag.png"),
+      Question.name("The question number 2 is true again.", true, "images/img.png"),
+      Question.name("The question number 3 is false.", false, "images/img.png"),
+      Question.name("The question number 4 is false again.", false, "images/flag.png"),
+      Question.name("The question number 5 is true.", true, "images/flag.png"),
+      Question.name("The question number 6 is true again.", true, "images/img.png"),
     ];
 
     final ButtonStyle myButtonStyle = ElevatedButton.styleFrom(
@@ -61,7 +61,7 @@ class MyWidget extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children:[
-                Image.asset("images/flag.png",width: 250,height: 180,),
+                Image.asset(_questions[_currentQuestion].image,width: 250,height: 180,),
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.transparent,
@@ -70,11 +70,11 @@ class MyWidget extends StatelessWidget {
                       color: Colors.black,style: BorderStyle.solid
                     )
                   ),
-                  height:120.0,
+                  height:150.0,
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child:Text(
-                      message,
+                      _questions[_currentQuestion].questionText,
                       textDirection: TextDirection.ltr,
                       style: TextStyle(
                         color: Colors.white,
