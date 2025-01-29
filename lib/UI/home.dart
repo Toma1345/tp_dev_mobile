@@ -45,62 +45,62 @@ class _MyWidgetState extends State<MyWidget> {
           backgroundColor: Colors.lightBlue,
         ),
         backgroundColor: widget.color,
-        body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children:[
-                Image.asset(_questions[_currentQuestion].image,width: 250,height: 180,),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      color: Colors.black,style: BorderStyle.solid
+        body: NotificationListener<IndexChanged>(
+            child:Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children:[
+                  Image.asset(_questions[_currentQuestion].image,width: 250,height: 180,),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(
+                        color: Colors.black,style: BorderStyle.solid
+                      )
+                    ),
+                    height:150.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child:Text(
+                        _questions[_currentQuestion].questionText,
+                        textDirection: TextDirection.ltr,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                          fontSize: widget.textsize,
+                        ),
+                      )
                     )
                   ),
-                  height:150.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child:Text(
-                      _questions[_currentQuestion].questionText,
-                      textDirection: TextDirection.ltr,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
-                        fontSize: widget.textsize,
-                      ),
-                    )
-                  )
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(onPressed: ()=> _previousQuestion(),
-                        child: const Icon(Icons.arrow_back, color:
-                        Colors.white,),
-                      ),
-                      MyTextButton(
-                          myText: "TRUE", myValue: true, returnValue: _handleValue
-                      ),
-                      MyTextButton(
-                          myText: "FALSE", myValue: false, returnValue: _handleValue
-                      ),
-                      ElevatedButton(onPressed: ()=> _nextQuestion(),
-                        child: const Icon(Icons.arrow_forward, color:
-                        Colors.white,),
-                      ),
-                    ]
-                ),
-              ]
-            )
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        MyIconButton(myIcon: Icons.arrow_back, value: -1),
+                        MyTextButton(
+                            myText: "TRUE", myValue: true, returnValue: _handleValue
+                        ),
+                        MyTextButton(
+                            myText: "FALSE", myValue: false, returnValue: _handleValue
+                        ),
+                        MyIconButton(myIcon: Icons.arrow_forward, value: 1),
+                      ]
+                  ),
+                ]
+              )
+            ),
+            onNotification: (n){
+              _changeQuestion(n.val);
+              return true;
+            },
         )
     );
   }
 
-  _previousQuestion() {
+  _changeQuestion(int n){
     setState(() {
-      _currentQuestion = (_currentQuestion-1)%_questions.length;
+      _currentQuestion = (_currentQuestion + n) %_questions.length;
     });
   }
 
@@ -109,7 +109,7 @@ class _MyWidgetState extends State<MyWidget> {
     if (choice == _questions[_currentQuestion].isCorrect){
       debugPrint("good");
       const mySnackBar = SnackBar(
-        content: Text("GOOD ANSWER!!!",style: TextStyle(fontSize: 20)),
+        content: Text("GOOD ANSWER !!!",style: TextStyle(fontSize: 20)),
         duration: Duration(milliseconds: 500),
         backgroundColor: Colors.lightGreen,
         width: 180.0, // Width of the SnackBar.
@@ -125,7 +125,7 @@ class _MyWidgetState extends State<MyWidget> {
     }else{
       debugPrint("bad");
       const mySnackBar = SnackBar(
-        content: Text("BAD ANSWER!!!",style: TextStyle(fontSize: 20),),
+        content: Text("BAD ANSWER !!!",style: TextStyle(fontSize: 20),),
         duration: Duration(milliseconds: 500),
         backgroundColor: Colors.red,
         width: 180.0, // Width of the SnackBar.
