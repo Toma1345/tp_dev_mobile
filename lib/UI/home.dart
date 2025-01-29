@@ -1,47 +1,34 @@
 import 'package:flutter/material.dart';
 import '../modele/question.dart';
+import 'myButtons.dart';
 
-class MyWidget extends StatelessWidget {
+class MyWidget extends StatefulWidget {
 
   final Color color;
   final double textsize;
-  final String message;
-  const MyWidget(this.color,this.textsize,this.message);
+  // final String message;
+  const MyWidget(this.color,this.textsize);
 
-  /*
   @override
-  //Widget build(BuildContext context) {
-    return Material(
-        color: color,
-        shape:
-        RoundedRectangleBorder(borderRadius:BorderRadius.circular(50.0) ),
-        child: Center(
-          child: Text(
-          message,
-          textDirection: TextDirection.ltr,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
-              fontSize: textsize,
-          ),
-        )));
-  }
-   */
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+
+  int _currentQuestion=0;
+  final List _questions = [
+    Question.name("The question number 1 is a very long question and her answer is true.", true, "images/flag.png"),
+    Question.name("The question number 2 is true again.", true, "images/img.png"),
+    Question.name("The question number 3 is false.", false, "images/img.png"),
+    Question.name("The question number 4 is false again.", false, "images/flag.png"),
+    Question.name("The question number 5 is true.", true, "images/flag.png"),
+    Question.name("The question number 6 is true again.", true, "images/img.png"),
+  ];
 
   @override
   Widget build(BuildContext context) {
 
-    int _currentQuestion=0;
-    final List _questions = [
-      Question.name("The question number 1 is a very long question and her answer is true.", true, "images/flag.png"),
-      Question.name("The question number 2 is true again.", true, "images/img.png"),
-      Question.name("The question number 3 is false.", false, "images/img.png"),
-      Question.name("The question number 4 is false again.", false, "images/flag.png"),
-      Question.name("The question number 5 is true.", true, "images/flag.png"),
-      Question.name("The question number 6 is true again.", true, "images/img.png"),
-    ];
-
+    /*
     final ButtonStyle myButtonStyle = ElevatedButton.styleFrom(
         backgroundColor: Colors.blueGrey.shade900,
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -49,6 +36,7 @@ class MyWidget extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(20)),
         )
     );
+    */
 
     return Scaffold(
         appBar: AppBar(
@@ -56,7 +44,7 @@ class MyWidget extends StatelessWidget {
           centerTitle: true,
           backgroundColor: Colors.lightBlue,
         ),
-        backgroundColor: color,
+        backgroundColor: widget.color,
         body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -80,7 +68,7 @@ class MyWidget extends StatelessWidget {
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.italic,
-                        fontSize: textsize,
+                        fontSize: widget.textsize,
                       ),
                     )
                   )
@@ -89,22 +77,16 @@ class MyWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(onPressed: ()=> _previousQuestion(),
-                        style: myButtonStyle,
                         child: const Icon(Icons.arrow_back, color:
                         Colors.white,),
                       ),
-                      ElevatedButton(onPressed: ()=> _checkAnswer(true),
-                        style: myButtonStyle,
-                        child: const Text("TRUE",style: TextStyle(color:
-                        Colors.white)),
+                      MyTextButton(
+                          myText: "TRUE", myValue: true, returnValue: _handleValue
                       ),
-                      ElevatedButton(onPressed: ()=> _checkAnswer(false),
-                        style: myButtonStyle,
-                        child: const Text("FALSE",style: TextStyle(color:
-                        Colors.white)),
+                      MyTextButton(
+                          myText: "FALSE", myValue: false, returnValue: _handleValue
                       ),
                       ElevatedButton(onPressed: ()=> _nextQuestion(),
-                        style: myButtonStyle,
                         child: const Icon(Icons.arrow_forward, color:
                         Colors.white,),
                       ),
@@ -116,9 +98,53 @@ class MyWidget extends StatelessWidget {
     );
   }
 
-  _previousQuestion() {}
+  _previousQuestion() {
+    setState(() {
+      _currentQuestion = (_currentQuestion-1)%_questions.length;
+    });
+  }
 
-  _checkAnswer(bool bool) {}
+  void _handleValue(bool choice) {
+    debugPrint(choice.toString());
+    if (choice == _questions[_currentQuestion].isCorrect){
+      debugPrint("good");
+      const mySnackBar = SnackBar(
+        content: Text("GOOD ANSWER!!!",style: TextStyle(fontSize: 20)),
+        duration: Duration(milliseconds: 500),
+        backgroundColor: Colors.lightGreen,
+        width: 180.0, // Width of the SnackBar.
+        padding: EdgeInsets.symmetric(
+          horizontal: 8.0, // Inner padding for SnackBar content.
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(mySnackBar);
+    }else{
+      debugPrint("bad");
+      const mySnackBar = SnackBar(
+        content: Text("BAD ANSWER!!!",style: TextStyle(fontSize: 20),),
+        duration: Duration(milliseconds: 500),
+        backgroundColor: Colors.red,
+        width: 180.0, // Width of the SnackBar.
+        padding: EdgeInsets.symmetric(
+          horizontal: 8.0, // Inner padding for SnackBar content.
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(mySnackBar);
+    }
+    _nextQuestion();
+  }
 
-  _nextQuestion() {}
+  _nextQuestion() {
+    setState(() {
+      _currentQuestion = (_currentQuestion+1)%_questions.length;
+    });
+  }
 }
